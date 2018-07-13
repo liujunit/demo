@@ -42,8 +42,10 @@ public class PdfToHtml {
                     String fontType = font.getName().substring(font.getName().indexOf("+")+1);
                     //Unicode码
                     String content = textPosition.getUnicode();
-                    content = content.replaceAll(" ","&nbsp;");
+                    content = content.replaceAll("\\s+| ","&nbsp;");
                     if (textPositions.size()==1){
+//                        builder.append(content);
+//                    }else if (textPositions.size()==1){
                         builder.append("<font height=\""+ fontHeight +"\" width=\""+ fontWidth +"\" style=\"font-family:"+ fontType +"; font-size:" + fontSizeInPt + "px; padding-left:" + indent + "px; \">" + content + "</font>");
                     }else {
                         if (i==0){
@@ -127,6 +129,7 @@ public class PdfToHtml {
         }
         StringBuffer sb = new StringBuffer();
         String[] split = stringBuffer.toString().split("\\n");
+        sb.append("<!DOCTYPE html>\n<html>\n<head></head>\n<body>\n");
         for (String s : split) {
             if (s.startsWith("<p><font")){
                 int s1 = s.indexOf("\">")+2;
@@ -137,6 +140,7 @@ public class PdfToHtml {
                 if (flag) sb.append(s + "\n");
             }
         }
+        sb.append("</body>\n<html>");
         doc.close();
         return sb;
     }
@@ -146,7 +150,7 @@ public class PdfToHtml {
      * @param source 要匹配的源文本
      * @return 属性值列表
      */
-    public static Map<String, String> match(String source) {
+    protected static Map<String, String> match(String source) {
         Map<String, String> result = new HashMap<>();
         if ("".equals(source)){
             result.put("font-family","无");
@@ -173,10 +177,11 @@ public class PdfToHtml {
 
     /**
      * 解析电子文件登记表
+     * 还是有一些不是准确的
      * @param file
      * @return
      */
-    public static Map<String, String> locationToHtml(File file) throws IOException {
+    public static Map<String, String> locationToMap(File file) throws IOException {
         Map<String, String> map = new HashMap<>();
         PDDocument doc= PDDocument.load(file);
         PDFTextStripper stripper = new PDFTextStripper();
@@ -189,18 +194,16 @@ public class PdfToHtml {
                     String key = split1[j];
                     String value = split[i];
                     if (value.trim().endsWith(key)){
-                        value = (split[i+1] + split[i+2]).replaceAll("\\n","");
+                        value = (split[i+1] + split[i+2] + split[i+3]).replaceAll("\\n","");
+                    }else {
+                        value = value + split[i+1] + split[i+2];
                     }
-                    if (value.contains(key)){
-                        value = value.substring(value.indexOf(key)).replaceAll(key ,"");
+                    if (value.contains("[")){
+                        value = value.replaceAll(key,"").replaceAll("\\d{1,2}-\\d{1,2}","").replaceAll("\\d{1,2}/\\d{1,2}\\s+[\\u4e00-\\u9fa5].*","").replaceAll("\\d+[KM]B","").replaceAll("[JSTZBQ]\\d{2}_\\d{4}.*","").trim().replaceAll(" ","").replaceAll("正文1|审批1","");
+                    }else{
+                        value = value.replaceAll(key,"").replaceAll("\\d{1,2}-\\d{1,2}","").replaceAll("\\d{1,2}/\\d{1,2}\\s+[\\u4e00-\\u9fa5].*","").replaceAll("\\d+[KM]B","").replaceAll("\\d{1,2}\\.\\d{1,2}.*","").trim().replaceAll(" ","").replaceAll("正文1|审批1","");
                     }
-//                    if (key.contains(".")){
-//                        key = key.substring(0, key.indexOf("."));
-//                    }
-                    value = value.replaceAll("\\d+-\\d+","").replaceAll("\\d+/\\d+\\s+[\\u4e00-\\u9fa5].*","").replaceAll("\\d+[KM]B","").trim().replaceAll(" ","");
                     map.put(key,value);
-                    System.out.println(key);
-                    System.out.println(value);
                 }
             }
         }
@@ -209,13 +212,16 @@ public class PdfToHtml {
 
 
 
-
-
     public static void main(String[] args) throws IOException {
-//        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\Z01_0001.pdf");
-//        StringBuffer stringBuffer = toHtmlString(file);
-//        System.out.println(stringBuffer);
-        File file = new File("E:\\西安\\pdf\\1.pdf");
-        locationToHtml(file);
+        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\Z01_0001.pdf");
+        StringBuffer stringBuffer = toHtmlString(file);
+        String[] split = stringBuffer.toString().split("\n");
+        for (String s : split) {
+            System.out.println(s);
+        }
+//        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\3.pdf");
+//        locationToMap(file);
+//        String test = "三岔子锰矿区三岔子矿段 SZK041 钻孔柱状图";
+//        System.out.println(test.replaceAll("\\d{1,2}\\.\\d{1,2}.*",""));
     }
 }
