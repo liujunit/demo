@@ -3,6 +3,7 @@ package jdk8;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * Lambda表达式
@@ -55,6 +56,42 @@ public class LambdaTest {
         System.out.println(java);
     }
 
+    /**
+     * ::用法
+     */
+    @Test
+    public void test4(){
+        PersonFactory<Person> personFactory = Person::new;
+        Person person = personFactory.create("L", "jun");
+    }
+
+    @Test
+    public void test5(){
+        final int num = 5;
+        Converter<Integer, String> converter = (from) -> String.valueOf(from + num);
+        String convert = converter.convert(6);
+        System.out.println(convert);
+    }
+
+    @Test
+    public void test6(){
+        Predicate<String> predicate = i -> i.length()>0;
+        System.out.println(predicate.test("123"));
+        System.out.println(predicate.negate().test("123"));
+
+        Predicate<Boolean> predicate1 = Objects::isNull;
+        Predicate<Boolean> predicate2 = Objects::nonNull;
+    }
+
+    @Test
+    public void test7(){
+        Optional<String> optional = Optional.of("123");
+        System.out.println(optional.isPresent());
+        System.out.println(optional.orElse("t"));
+        System.out.println(optional.get());
+        optional.ifPresent(s -> System.out.println(s.charAt(0)));
+    }
+
 }
 //功能性接口 注释可以省略
 //@FunctionalInterface
@@ -66,4 +103,20 @@ class Something{
     String startWith(String s){
         return String.valueOf(s.charAt(0));
     }
+}
+
+class Person{
+    private String firstName;
+    private String lastName;
+
+    Person(){}
+
+    Person(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+}
+
+interface PersonFactory<P extends Person>{
+    P create(String firstName, String lastName);
 }
