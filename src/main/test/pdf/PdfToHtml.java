@@ -42,7 +42,7 @@ public class PdfToHtml {
                     String fontType = font.getName().substring(font.getName().indexOf("+")+1);
                     //Unicode码
                     String content = textPosition.getUnicode();
-                    content = content.replaceAll("\\s+| ","&nbsp;");
+                    content = content.replaceAll("\\s+| ","&nbsp;").replaceAll("\\<","＜").replaceAll("\\>","＞");
                     if (textPositions.size()==1){
 //                        builder.append(content);
 //                    }else if (textPositions.size()==1){
@@ -213,7 +213,7 @@ public class PdfToHtml {
 
 
     public static void main(String[] args) throws IOException {
-        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\Z01_0001.pdf");
+        File file = new File("E:\\西安\\pdf\\存档电子文件\\dox1.pdf");
         StringBuffer stringBuffer = toHtmlString(file);
         String[] split = stringBuffer.toString().split("\n");
         for (String s : split) {
