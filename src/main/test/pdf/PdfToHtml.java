@@ -32,6 +32,9 @@ public class PdfToHtml {
                     TextPosition textPosition = textPositions.get(i);
                     //获取字体大小
                     int fontSizeInPt = Math.round(textPosition.getFontSizeInPt()*1.5f);
+                    if (fontSizeInPt < 0){
+                        fontSizeInPt = Math.abs(fontSizeInPt/10);
+                    }
                     //获取字体宽高
                     int fontWidth = Math.round(textPosition.getWidth());
                     int fontHeight = Math.round(textPosition.getHeight());
