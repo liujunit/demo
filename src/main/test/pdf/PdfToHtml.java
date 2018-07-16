@@ -62,11 +62,30 @@ public class PdfToHtml {
         };
         StringBuffer stringBuffer = new StringBuffer();
         String content = stripper.getText(doc);
+        //中间添加一层过滤 过滤掉空行和页标-------------
+        StringBuffer contentBuffer = new StringBuffer();
+        String[] pdfLinesWithNum = content.split("\\r?\\n");
+        for (int i = 0; i < pdfLinesWithNum.length; i++) {
+            String s = pdfLinesWithNum[i];
+            if (s.indexOf("</font>")==s.lastIndexOf("</font>")){//只有一个标签
+                Map<String, String> fontInfo = match(s);
+                int s1 = s.indexOf("\">")+2;
+                int s2 = s.lastIndexOf("</font>");
+                String m = s.substring(s1, s2).replaceAll("&nbsp;","").trim();
+                int font_size = Integer.parseInt(fontInfo.get("font-size").replace("px",""));
+                if ((m.matches("\\d+") && font_size>10 && m.length()<3) || "".equals(m)){
+                    continue;
+                }
+            }
+            contentBuffer.append(s + "\n");
+        }
+        //-----------------------------------------------
         //先获取文字
-        String pdfLinesWithFont[]= content.split("\\r?\\n");
+        String pdfLinesWithFont[]= contentBuffer.toString().split("\\r?\\n");
 //        String fontType = "";
         int fontSizeItem = 0;
         int leftItem = 0;
+        boolean flags = false;
         for (int i = 0; i < pdfLinesWithFont.length; i++) {
             String s = pdfLinesWithFont[i];
 //            System.out.println("<p>" + s + "</p>");
@@ -92,10 +111,10 @@ public class PdfToHtml {
             int font_size = Integer.parseInt(fontInfo.get("font-size").replace("px",""));
             int font_left = Integer.parseInt(fontInfo.get("padding-left").replace("px",""));
             //逻辑判断是否是一个段落里面的 是的话去掉font标签
-            if (font_size==fontSizeItem){//大小相同（先不进行字体的判断）
+            if (font_size==fontSizeItem || font_size<10 || flags){//大小相同（先不进行字体的判断）
                 //判断是否进行了缩进
                 int left = leftItem - font_left;
-                if (left>20 && left<35){ //大于20小于35判断为缩进 (这里会有一些问题！！！)
+                if (left>20 && left<38 || font_size<10 || flags){ //大于20小于35判断为缩进 (这里会有一些问题！！！)
                     s = s.replaceAll("<font .*?>","").replaceAll("</font>","");
                     //这里去除上一行的结尾标签
                     String up = pdfLinesWithFont[i-1];
@@ -118,6 +137,11 @@ public class PdfToHtml {
                 }
                 s = "<p>" + s + "</p>";
             }
+            if (font_size < 10){
+                flags = true;
+            }else {
+                flags = false;
+            }
             pdfLinesWithFont[i] = s;
         }
         pdfLinesWithFont[pdfLinesWithFont.length-1] = pdfLinesWithFont[pdfLinesWithFont.length-1] + "</font></p>";
@@ -136,7 +160,9 @@ public class PdfToHtml {
                 int s2 = s.lastIndexOf("</font>");
                 String m = s.substring(s1, s2).replaceAll("&nbsp;","").trim();
                 boolean flag = true;
-                if ("".equals(m) || m.matches("\\d+")) flag = false;
+                if ("".equals(m) || (m.matches("\\d+") && m.length() < 3)){
+                    flag = false;
+                }
                 if (flag) sb.append(s + "\n");
             }
         }
@@ -213,7 +239,7 @@ public class PdfToHtml {
 
 
     public static void main(String[] args) throws IOException {
-        File file = new File("E:\\西安\\pdf\\存档电子文件\\dox1.pdf");
+        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\Z01_0001.pdf");
         StringBuffer stringBuffer = toHtmlString(file);
         String[] split = stringBuffer.toString().split("\n");
         for (String s : split) {
