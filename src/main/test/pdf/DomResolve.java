@@ -11,10 +11,14 @@ import java.util.*;
 
 public class DomResolve {
 
-
+    /**
+     * 三元组样式集合的返回
+     * @param file
+     * @return
+     */
     public static List<Tuple3<Integer, String, Integer>> createTuple3s(File file){
         Document document = null;
-        //声明一个三元组
+        //声明一个三元组集合
         List<Tuple3<Integer, String, Integer>> list = new ArrayList<>();
         try {
             SAXReader saxReader = new SAXReader();
@@ -89,7 +93,7 @@ public class DomResolve {
     }
 
     public static void main(String[] args) {
-        File file = new File("E:\\西安\\pdf\\存档电子文件\\Z01_0001.pdf");
+        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\Z01_01.pdf");
         List<Tuple3<Integer, String, Integer>> tuple3s = createTuple3s(file);
         for (int i = 0; i < tuple3s.size(); i++) {
             Tuple3<Integer, String, Integer> tuple3 = tuple3s.get(i);
