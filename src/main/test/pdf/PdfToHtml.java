@@ -7,9 +7,7 @@ import org.apache.pdfbox.text.TextPosition;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -158,16 +156,33 @@ public class PdfToHtml {
         StringBuffer sb = new StringBuffer();
         String[] split = stringBuffer.toString().split("\\n");
         sb.append("<!DOCTYPE html>\n<html>\n<head></head>\n<body>\n");
+        int count = 0;//计数器
+        String mark = "";
         for (String s : split) {
             if (s.startsWith("<p><font")){
                 int s1 = s.indexOf("\">")+2;
                 int s2 = s.lastIndexOf("</font>");
-                String m = s.substring(s1, s2).replaceAll("&nbsp;","").trim();
+                String m = s.substring(s1, s2).replaceAll(" ","").trim();
                 boolean flag = true;
                 if ("".equals(m) || (m.matches("\\d+") && m.length() < 3)){
                     flag = false;
                 }
-                if (flag) sb.append(s + "\n");
+                if (flag) {
+                    //查找正文起始位置
+                    if (count==0 || count==1){
+                        Object[] contains = isContains(m);
+                        if (Boolean.parseBoolean(contains[0].toString())){
+                            if (count==0){//第一次遇到的
+                                mark = contains[1].toString();
+                                count++;
+                            }else if (m.contains(mark) && count==1){
+                                sb.append("<p><font>------------华丽的分割线------------</font></p>\n");
+                                count++;//匹配到后就不再匹配
+                            }
+                        }
+                    }
+                    sb.append(s + "\n");
+                }
             }
         }
         sb.append("</body>\n</html>");
@@ -242,10 +257,25 @@ public class PdfToHtml {
         return map;
     }
 
-
+    /**
+     * content type筛选器，集合中包含的类型将被处理，没有包含的将被忽略
+     */
+    public static final List<String> CONTENTTYPE_FLTER = Arrays.asList("第1章", "第一章","前言","绪论","绪言");
+    private static Object[] isContains(String str){
+        Object[] objects = new Object[2];
+        for (String s : CONTENTTYPE_FLTER) {
+            if (str.indexOf(s)!=-1){
+                objects[0] = true;
+                objects[1] = s;
+                return objects;
+            }
+        }
+        objects[0] = false;
+        return objects;
+    }
 
     public static void main(String[] args) throws IOException {
-        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\z3.pdf");
+        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\z1.pdf");
         StringBuffer stringBuffer = toHtmlString(file);
         String[] split = stringBuffer.toString().split("\n");
         for (String s : split) {
