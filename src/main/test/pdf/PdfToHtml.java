@@ -245,7 +245,7 @@ public class PdfToHtml {
 
 
     public static void main(String[] args) throws IOException {
-        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\z3.pdf");
+        File file = new File("E:\\西安\\pdf\\z3.pdf");
         StringBuffer stringBuffer = toHtmlString(file);
         String[] split = stringBuffer.toString().split("\n");
         for (String s : split) {

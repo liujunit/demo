@@ -2,9 +2,7 @@ package jdk8;
 
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -151,6 +149,31 @@ public class StreamsTest {
                         (name1, name2) -> name1 + ";" + name2
                 ));
         System.out.println(collect1);
+    }
+
+    @Test
+    public void test5(){
+        long u = list.stream()
+                .filter(s -> s.getName().startsWith("u"))
+                .count();
+        System.out.println(u);
+    }
+
+    @Test
+    public void test6(){
+        List<String> stringCollection = new ArrayList<>();
+        stringCollection.add("ddd2");
+        stringCollection.add("aaa2");
+        stringCollection.add("bbb1");
+        stringCollection.add("aaa1");
+        stringCollection.add("bbb3");
+        stringCollection.add("ccc");
+        stringCollection.add("bbb2");
+        stringCollection.add("ddd1");
+        Optional<String> reduce = stringCollection.stream()
+                .sorted()
+                .reduce((a, b) -> a + "#" + b);
+        reduce.ifPresent(System.out::println);
     }
 
 }
