@@ -5,8 +5,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -274,13 +273,46 @@ public class PdfToHtml {
         return objects;
     }
 
-    public static void main(String[] args) throws IOException {
-        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\z1.pdf");
-        StringBuffer stringBuffer = toHtmlString(file);
-        String[] split = stringBuffer.toString().split("\n");
-        for (String s : split) {
-            System.out.println(s);
+
+    /**
+     * 针对新版规范，通过电子文件登记表文件构建档案数据集中数据实体（文件名）和文件名称的查找表：filename->title
+     * @param file 文件
+     */
+    public static Map<String, String> bluidFindtableFromDJB(File file) {
+        Map<String, String> map = new Hashtable<>();
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            String line;
+            while ((line = bufferedReader.readLine())!=null){
+                int i = line.indexOf("：");
+                if (i>0)
+                map.put(line.substring(0,i).trim(),line.substring(i+1).trim());
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        return map;
+    }
+    public static void main(String[] args) throws IOException {
+//        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\z1.pdf");
+//        StringBuffer stringBuffer = toHtmlString(file);
+//        String[] split = stringBuffer.toString().split("\n");
+//        for (String s : split) {
+//            System.out.println(s);
+//        }
+        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\新建文本文档 (3).txt");
+        Map<String, String> map = bluidFindtableFromDJB(file);
+        map.forEach((a,b) -> System.out.println(a + "-->" + b));
+
 //        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\3.pdf");
 //        locationToMap(file);
 //        String test = "三岔子锰矿区三岔子矿段 SZK041 钻孔柱状图";
