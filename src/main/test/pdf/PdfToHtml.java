@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 /**
  * Created by jiuyuan4 on 2018/7/10.
  */
-public class PdfToHtml {
+public class PdfToHtml{
 
     /**
      * 正文的pdf解析
@@ -44,6 +44,7 @@ public class PdfToHtml {
                     //Unicode码
                     String content = textPosition.getUnicode();
                     content = content.replaceAll("\\s+| "," ").replaceAll("&","&amp;").replaceAll("\\<","＜").replaceAll("\\>","＞");
+
                     if (textPositions.size()==1){
 //                        builder.append(content);
 //                    }else if (textPositions.size()==1){
@@ -62,7 +63,15 @@ public class PdfToHtml {
             }
         };
         StringBuffer stringBuffer = new StringBuffer();
-        String content = stripper.getText(doc);
+//        String content = stripper.getText(doc);
+        String content = "";
+        int numberOfPages = doc.getNumberOfPages();
+        for (int i = 1; i < numberOfPages+1; i++){
+            stripper.setStartPage(i);
+            stripper.setEndPage(i);
+            String text = stripper.getText(doc).replaceAll("style=", "page=" + i + " style=");
+            content += text;
+        }
         //中间添加一层过滤 过滤掉空行和页标-------------
         StringBuffer contentBuffer = new StringBuffer();
         String[] pdfLinesWithNum = content.split("\\r?\\n");
@@ -303,19 +312,20 @@ public class PdfToHtml {
         return map;
     }
     public static void main(String[] args) throws IOException {
-//        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\z1.pdf");
-//        StringBuffer stringBuffer = toHtmlString(file);
-//        String[] split = stringBuffer.toString().split("\n");
-//        for (String s : split) {
-//            System.out.println(s);
-//        }
-        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\新建文本文档 (3).txt");
-        Map<String, String> map = bluidFindtableFromDJB(file);
-        map.forEach((a,b) -> System.out.println(a + "-->" + b));
+        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\西安\\测试数据\\7426\\存档电子文件\\Z01_001.pdf");
+        StringBuffer stringBuffer = toHtmlString(file);
+        String[] split = stringBuffer.toString().split("\n");
+        for (String s : split) {
+            System.out.println(s);
+        }
+//        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\新建文本文档 (3).txt");
+//        Map<String, String> map = bluidFindtableFromDJB(file);
+//        map.forEach((a,b) -> System.out.println(a + "-->" + b));
 
 //        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\3.pdf");
 //        locationToMap(file);
 //        String test = "三岔子锰矿区三岔子矿段 SZK041 钻孔柱状图";
 //        System.out.println(test.replaceAll("\\d{1,2}\\.\\d{1,2}.*",""));
     }
+
 }
