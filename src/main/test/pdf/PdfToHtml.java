@@ -85,7 +85,8 @@ public class PdfToHtml{
         for (int i = 1; i < numberOfPages+1; i++){
             stripper.setStartPage(i);
             stripper.setEndPage(i);
-            String text = stripper.getText(doc).replaceAll("style=", "page=" + i + " style=");
+//            String text = stripper.getText(doc).replaceAll("style=", "page=" + i + " style=");
+            String text = stripper.getText(doc).replaceAll("style=", "page=\"" + i + "\" style=");
             content += text;
         }
         //中间添加一层过滤 过滤掉空行和页标-------------
