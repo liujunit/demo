@@ -31,8 +31,11 @@ public class PdfToHtml{
             }
             @Override
             protected void writeString(String text, List<TextPosition> textPositions) throws IOException {
+                boolean flag = false;
+                if ("/".equals(text)) flag = true;
                 StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < textPositions.size(); i++) {
+                    if (flag) continue;
                     TextPosition textPosition = textPositions.get(i);
                     //获取字体大小
                     int fontSizeInPt = Math.round(textPosition.getFontSizeInPt()*1.5f);
@@ -109,6 +112,7 @@ public class PdfToHtml{
                     continue;
                 }
             }
+            s = s.replaceAll("\u001F","");
             contentBuffer.append(s + "\n");
         }
         //-----------------------------------------------
@@ -215,6 +219,7 @@ public class PdfToHtml{
                             }
                         }
                     }
+                    s = s.replaceAll("\\n?\\t?\\r","");
                     sb.append(s + "\n");
                 }
             }
@@ -338,7 +343,7 @@ public class PdfToHtml{
         return map;
     }
     public static void main(String[] args) throws IOException {
-        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\西安\\Z01_0001(2).pdf");
+        File file = new File("F:\\西安\\pdf\\Z01_0002.pdf");
         StringBuffer stringBuffer = toHtmlString(file);
         String[] split = stringBuffer.toString().split("\n");
         for (String s : split) {
