@@ -299,7 +299,7 @@ public class PdfToHtml{
     /**
      * content type筛选器，集合中包含的类型将被处理，没有包含的将被忽略
      */
-    public static final List<String> CONTENTTYPE_FLTER = Arrays.asList("第1章", "第一章","前言","绪论","绪言");
+    public static final List<String> CONTENTTYPE_FLTER = Arrays.asList("第1章", "第一章","前言","绪论","绪言","概况");
     private static Object[] isContains(String str){
         Object[] objects = new Object[2];
         for (String s : CONTENTTYPE_FLTER) {
@@ -343,7 +343,7 @@ public class PdfToHtml{
         return map;
     }
     public static void main(String[] args) throws IOException {
-        File file = new File("E:\\西安\\Z01_0001.pdf");
+        File file = new File("E:\\西安\\S01_7136.pdf");
         StringBuffer stringBuffer = toHtmlString(file);
         String[] split = stringBuffer.toString().split("\n");
         for (String s : split) {
