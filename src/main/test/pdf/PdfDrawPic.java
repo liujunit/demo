@@ -59,7 +59,7 @@ public class PdfDrawPic {
 
     public static void main(String[] args) throws IOException {
         //需要解析的pdf的路径
-        String filePath = "E:\\西安\\Z01_00012.pdf";
+        String filePath = "E:\\西安\\S01_0001.pdf";
         //解析后图片保存的位置
         String imgPath = "E:\\测试生成pdf图片\\";
         getPic(filePath, imgPath);
