@@ -147,6 +147,9 @@ public class PdfToHtml {
         }
         pdfLinesWithFont[pdfLinesWithFont.length-1] = pdfLinesWithFont[pdfLinesWithFont.length-1] + "</font></p>";
         for (String s : pdfLinesWithFont) {
+            if (s.endsWith("</font></p></font></p>")){
+                s = s.replace("</font></p></font></p>","</font></p>");
+            }
             if (s.endsWith("</font></p>")){
                 s = s+"\n";
             }
@@ -184,6 +187,7 @@ public class PdfToHtml {
                 }
             }
         }
+
         sb.append("</body>\n</html>");
         doc.close();
         return sb;
@@ -303,15 +307,15 @@ public class PdfToHtml {
         return map;
     }
     public static void main(String[] args) throws IOException {
-//        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\z1.pdf");
-//        StringBuffer stringBuffer = toHtmlString(file);
-//        String[] split = stringBuffer.toString().split("\n");
-//        for (String s : split) {
-//            System.out.println(s);
-//        }
-        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\新建文本文档 (3).txt");
-        Map<String, String> map = bluidFindtableFromDJB(file);
-        map.forEach((a,b) -> System.out.println(a + "-->" + b));
+        File file = new File("C:\\Users\\Mloong\\Documents\\Tencent Files\\156315348\\FileRecv\\Z01_0001.pdf");
+        StringBuffer stringBuffer = toHtmlString(file);
+        String[] split = stringBuffer.toString().split("\n");
+        for (String s : split) {
+            System.out.println(s);
+        }
+//        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\新建文本文档 (3).txt");
+//        Map<String, String> map = bluidFindtableFromDJB(file);
+//        map.forEach((a,b) -> System.out.println(a + "-->" + b));
 
 //        File file = new File("C:\\Users\\jiuyuan4\\Desktop\\资料\\存档电子文件\\3.pdf");
 //        locationToMap(file);
