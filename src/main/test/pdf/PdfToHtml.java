@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 /**
  * Created by jiuyuan4 on 2018/7/10.
  */
-public class PdfToHtml {
+public class PdfToHtml{
 
     /**
      * 正文的pdf解析
@@ -22,11 +22,20 @@ public class PdfToHtml {
      */
     public static StringBuffer toHtmlString(File file) throws IOException {
         PDDocument doc= PDDocument.load(file);
-
         PDFTextStripper stripper = new PDFTextStripper() {
+            Map<TextPosition, Integer> renderingMode = new HashMap<TextPosition, Integer>();
+            @Override
+            protected void processTextPosition(TextPosition text) {
+                this.renderingMode.put(text, getGraphicsState().getTextState().getRenderingMode().intValue());
+                super.processTextPosition(text);
+            }
+            @Override
             protected void writeString(String text, List<TextPosition> textPositions) throws IOException {
+                boolean flag = false;
+                if ("/".equals(text)) flag = true;
                 StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < textPositions.size(); i++) {
+                    if (flag) continue;
                     TextPosition textPosition = textPositions.get(i);
                     //获取字体大小
                     int fontSizeInPt = Math.round(textPosition.getFontSizeInPt()*1.5f);
@@ -44,6 +53,15 @@ public class PdfToHtml {
                     //Unicode码
                     String content = textPosition.getUnicode();
                     content = content.replaceAll("\\s+| "," ").replaceAll("&","&amp;").replaceAll("\\<","＜").replaceAll("\\>","＞");
+                    Integer isBold = renderingMode.get(textPosition);
+                    if (null==isBold){
+                        if ((i+1) < textPositions.size()){
+                            isBold = renderingMode.get(textPositions.get(i + 1));
+                        }else {
+                            isBold = 0;
+                        }
+                    }
+                    fontType = fontType + "+" + isBold;
                     if (textPositions.size()==1){
 //                        builder.append(content);
 //                    }else if (textPositions.size()==1){
@@ -61,29 +79,46 @@ public class PdfToHtml {
                 writeString(builder.toString());
             }
         };
+        stripper.setSuppressDuplicateOverlappingText(false);
         StringBuffer stringBuffer = new StringBuffer();
-        String content = stripper.getText(doc);
+//        String content = stripper.getText(doc);
+        String content = "";
+        int numberOfPages = doc.getNumberOfPages();
+        //分页去处理
+        for (int i = 1; i < numberOfPages+1; i++){
+            stripper.setStartPage(i);
+            stripper.setEndPage(i);
+//            String text = stripper.getText(doc).replaceAll("style=", "page=" + i + " style=");
+            String text = stripper.getText(doc).replaceAll("style=", "page=\"" + i + "\" style=");
+            content += text;
+        }
         //中间添加一层过滤 过滤掉空行和页标-------------
         StringBuffer contentBuffer = new StringBuffer();
         String[] pdfLinesWithNum = content.split("\\r?\\n");
         for (int i = 0; i < pdfLinesWithNum.length; i++) {
             String s = pdfLinesWithNum[i];
+//            String up = "";
+//            if (i > 0){
+//                up = pdfLinesWithNum[i-1].replaceAll("</font>","");
+//            }
             if (!"".equals(s) && s.indexOf("</font>")==s.lastIndexOf("</font>")){//只有一个标签
                 Map<String, String> fontInfo = match(s);
                 int s1 = s.indexOf("\">")+2;
                 int s2 = s.lastIndexOf("</font>");
                 String m = s.substring(s1, s2).trim();
                 int font_size = Integer.parseInt(fontInfo.get("font-size").replace("px",""));
+                // && !up.endsWith("m")
                 if ((m.matches("\\d+") && font_size>10 && m.length()<3) || "".equals(m)){
                     continue;
                 }
             }
+            s = s.replaceAll("\u001F","");
             contentBuffer.append(s + "\n");
         }
         //-----------------------------------------------
         //先获取文字
         String pdfLinesWithFont[]= contentBuffer.toString().split("\\r?\\n");
-//        String fontType = "";
+        String fontType = "";
         int fontSizeItem = 0;
         int leftItem = 0;
         boolean flags = false;
@@ -108,14 +143,14 @@ public class PdfToHtml {
             }
             //获取font标签中的字码大小和左边距
             Map<String, String> fontInfo = match(s);
-//            String font_type = fontInfo.get("font-family");
+            String font_type = fontInfo.get("font-family");
             int font_size = Integer.parseInt(fontInfo.get("font-size").replace("px",""));
             int font_left = Integer.parseInt(fontInfo.get("padding-left").replace("px",""));
             //逻辑判断是否是一个段落里面的 是的话去掉font标签
             if (font_size==fontSizeItem || font_size<10 || flags){//大小相同（先不进行字体的判断）
                 //判断是否进行了缩进
                 int left = leftItem - font_left;
-                if ((left>20 && left<38) || font_size<10 || flags){ //大于20小于35判断为缩进 (这里会有一些问题！！！)
+                if ((left>20 && left<38 && font_type.equals(fontType)) || font_size<10 || flags){ //大于20小于35判断为缩进 (这里会有一些问题！！！)
                     s = s.replaceAll("<font .*?>","").replaceAll("</font>","");
                     //这里去除上一行的结尾标签
                     String up = pdfLinesWithFont[i-1];
@@ -124,13 +159,14 @@ public class PdfToHtml {
                     }
                 }else {
                     leftItem = font_left;
+                    fontType = font_type;
                     if (i!=0 && !pdfLinesWithFont[i-1].contains("</font></p>") && !"<p></p>".equals(pdfLinesWithFont[i-1])){
                         pdfLinesWithFont[i-1] = pdfLinesWithFont[i-1] + "</font></p>";
                     }
                     s = "<p>" + s + "</p>";
                 }
             }else {
-//                fontType = font_type;
+                fontType = font_type;
                 fontSizeItem = font_size;
                 leftItem = font_left;
                 if (i!=0 && !pdfLinesWithFont[i-1].contains("</font></p>") && !"<p></p>".equals(pdfLinesWithFont[i-1])){
@@ -138,7 +174,7 @@ public class PdfToHtml {
                 }
                 s = "<p>" + s + "</p>";
             }
-            if (font_size < 10){
+            if (font_size < 10 && font_size>0){
                 flags = true;
             }else {
                 flags = false;
@@ -183,6 +219,7 @@ public class PdfToHtml {
                             }
                         }
                     }
+                    s = s.replaceAll("\\n?\\t?\\r","");
                     sb.append(s + "\n");
                 }
             }
@@ -263,7 +300,7 @@ public class PdfToHtml {
     /**
      * content type筛选器，集合中包含的类型将被处理，没有包含的将被忽略
      */
-    public static final List<String> CONTENTTYPE_FLTER = Arrays.asList("第1章", "第一章","前言","绪论","绪言");
+    public static final List<String> CONTENTTYPE_FLTER = Arrays.asList("第1章", "第一章","前言","绪论","绪言","概况");
     private static Object[] isContains(String str){
         Object[] objects = new Object[2];
         for (String s : CONTENTTYPE_FLTER) {
@@ -322,4 +359,5 @@ public class PdfToHtml {
 //        String test = "三岔子锰矿区三岔子矿段 SZK041 钻孔柱状图";
 //        System.out.println(test.replaceAll("\\d{1,2}\\.\\d{1,2}.*",""));
     }
+
 }
