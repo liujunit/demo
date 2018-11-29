@@ -95,7 +95,16 @@ public class SToHtml {
                 }
             };
             stripper.setSuppressDuplicateOverlappingText(false);
-            String content = stripper.getText(doc);
+            String content = "";
+            int numberOfPages = doc.getNumberOfPages();
+            //分页去处理
+            for (int i = 1; i < numberOfPages+1; i++){
+                stripper.setStartPage(i);
+                stripper.setEndPage(i);
+//            String text = stripper.getText(doc).replaceAll("style=", "page=" + i + " style=");
+                String text = stripper.getText(doc).replaceAll("style=", "page=\"" + i + "\" style=");
+                content += text;
+            }
             String[] contentSplit = content.split("\t|\r|\n");
             List<String> contentList = new ArrayList<>();
             String fontFamilySize = "";
@@ -196,7 +205,7 @@ public class SToHtml {
 
 
         public static void main(String[] args) throws IOException {
-            File file = new File("E:\\西安\\S文件\\S01_7217.pdf");
+            File file = new File("E:\\数据\\测试数据\\6487\\存档电子文件\\S01_0001.pdf");
             StringBuffer stringBuffer = toHtmlString(file);
             String[] split = stringBuffer.toString().split("\n");
             for (String s : split) {

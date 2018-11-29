@@ -9,8 +9,8 @@ public class DirectoryReader {
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("E:\\档案库");
-        FileWriter fileWriter = new FileWriter("E:\\档案号.txt");
+        File file = new File("G:\\geology");
+        FileWriter fileWriter = new FileWriter("G:\\入库.txt");
         BufferedWriter bf = new BufferedWriter(fileWriter);
         File[] files = file.listFiles();
         for (File f : files) {
