@@ -7,7 +7,6 @@ import com.linuxense.javadbf.DBFRow;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.charset.Charset;
 
 /**
@@ -32,9 +31,15 @@ public class ReadDBF {
             int recordCount = dr.getRecordCount();
             for (int i = 0; i < recordCount; i++) {
                 DBFRow dbfRow = dr.nextRow();
-                Object nrty = dbfRow.getObject("nrty");
-                System.out.println(nrty);
-                System.out.println(dbfRow.getString("nrty"));
+                for (int j = 0; j < fieldCount; j++) {
+                    String string = dbfRow.getString(j);
+                    if (j == 0) {
+                        System.out.print(string.trim() + "  ");
+                    } else {
+                        System.out.print(string + "  ");
+                    }
+                }
+                System.out.println();
             }
             Charset charset = dr.getCharset();
             System.out.println(charset);

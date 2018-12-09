@@ -210,7 +210,7 @@ public class SToHtml {
 
 
     public static void main(String[] args) throws IOException {
-        File file = new File("E:\\数据\\测试数据\\6961\\存档电子文件\\S01_0001.pdf");
+        File file = new File("F:\\S01_0001.pdf");
         StringBuffer stringBuffer = toHtmlString(file);
         String[] split = stringBuffer.toString().split("\n");
         for (String s : split) {
