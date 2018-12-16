@@ -37,6 +37,7 @@ public class CreateWordDemo2 {
             createContent(doc.createParagraph(), contentMap.get(title));
         }
         String path = "D:\\" + fileName + ".doc";
+        //这里的流可以集成到项目中作为下载
         OutputStream os = null;
         try {
             os = new FileOutputStream(path);
