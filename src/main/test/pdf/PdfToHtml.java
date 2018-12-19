@@ -343,7 +343,7 @@ public class PdfToHtml{
         return map;
     }
     public static void main(String[] args) throws IOException {
-        File file = new File("E:\\西安\\S01_7136.pdf");
+        File file = new File("E:\\西安\\pdf\\Z01_0001.pdf");
         StringBuffer stringBuffer = toHtmlString(file);
         String[] split = stringBuffer.toString().split("\n");
         for (String s : split) {

@@ -1,6 +1,7 @@
 package util;
 
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * 说明：MD5处理
@@ -34,6 +35,32 @@ public class MD5 {
 		}
 		return str;
 	}
+
+	public static String genUUID(String rootCode) {
+		if (rootCode == null || rootCode.isEmpty()) {
+			throw new java.lang.IllegalArgumentException();
+		}
+		MessageDigest m;
+		try {
+			m = MessageDigest.getInstance("MD5");
+			byte[] bd = rootCode.toLowerCase().getBytes();
+			m.update(bd);
+			StringBuilder sb = new StringBuilder();
+			int offset = 0;
+			byte[] md = m.digest();
+			for (byte b : md) {
+				sb.append(String.format("%02x", b & 0xff));
+				if (offset == 3 || offset == 5 || offset == 7 || offset == 9)
+					sb.append("-");
+				offset++;
+			}
+			return sb.toString();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public static void main(String[] args) {
 		System.out.println(md5("31119@qq.com"+"123456"));
 		System.out.println(md5("mj1"));

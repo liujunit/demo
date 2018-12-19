@@ -97,6 +97,7 @@ public class DomResolve {
         List<Tuple3<Integer, String, Integer>> tuple3s = createTuple3s(file);
         for (int i = 0; i < tuple3s.size(); i++) {
             Tuple3<Integer, String, Integer> tuple3 = tuple3s.get(i);
+
             for (Object o : tuple3) {
                 System.out.println(Objects.toString(o));
             }
