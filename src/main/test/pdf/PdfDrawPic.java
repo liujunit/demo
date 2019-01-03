@@ -39,6 +39,8 @@ public class PdfDrawPic {
                     //图片名的生成规则：页码-图片在当前页面第几次出现.后缀
                     File imgFile = new File(imgPath + i + "-" + count + "." + pdImageXObject.getSuffix());
                     imgFile.createNewFile();
+                    //这里可以判断这个length过滤掉一些小图 log图标之类的
+                    //byte[] fileLength = os.toByteArray();
                     FileOutputStream fos = new FileOutputStream(imgFile);
                     int byteContent = 0;
                     byte[] bytes = new byte[1024];
