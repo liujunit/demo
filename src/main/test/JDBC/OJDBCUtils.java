@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class OJDBCUtils {
 
     private static final String DRIVERNAME = "oracle.jdbc.driver.OracleDriver";
-    private static final String URL = "jdbc:oracle:thin:@192.168.50.165:1521:ORCL";
+    private static final String URL = "jdbc:oracle:thin:@192.168.1.122:1521:ORCL";
     private static final String USER = "geology";
     private static final String PASSWORD = "geology123";
 

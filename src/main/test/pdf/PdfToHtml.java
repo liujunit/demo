@@ -55,7 +55,7 @@ public class PdfToHtml {
                     String fontType = font.getName().substring(font.getName().indexOf("+") + 1);
                     //Unicode码
                     String content = textPosition.getUnicode();
-                    content = content.replaceAll("\\s+| |\\u0005|\\u0001|\\u0006|\\u0012", " ").replaceAll("&", "&amp;").replaceAll("\\<", "＜").replaceAll("\\>", "＞");
+                    content = content.replaceAll("\\s+| |\\u0005|\\u0001|\\u0006|\\u0012|\\u0010", " ").replaceAll("&", "").replaceAll("\\<", "＜").replaceAll("\\>", "＞");
                     Integer isBold = renderingMode.get(textPosition);
                     if (null == isBold) {
                         if ((i + 1) < textPositions.size()) {
@@ -305,7 +305,7 @@ public class PdfToHtml {
     /**
      * content type筛选器，集合中包含的类型将被处理，没有包含的将被忽略
      */
-    public static final List<String> CONTENTTYPE_FLTER = Arrays.asList("第1章", "第一章", "前言", "绪论", "绪言", "概况", "序言");
+    public static final List<String> CONTENTTYPE_FLTER = Arrays.asList("第1章", "第一章", "前言", "绪论", "绪言", "概况", "序言", "基本情况", "概论");
 
     private static Object[] isContains(String str) {
         Object[] objects = new Object[2];
@@ -352,7 +352,7 @@ public class PdfToHtml {
     }
 
     public static void main(String[] args) throws IOException {
-        File file = new File("E:\\西安\\pdf\\Z01_0001.pdf");
+        File file = new File("D:\\有问题\\3\\8215\\存档电子文件\\Z01_0001.pdf");
         StringBuffer stringBuffer = toHtmlString(file);
         String[] split = stringBuffer.toString().split("\n");
         FileWriter fw = new FileWriter("F:\\test.xml", false);

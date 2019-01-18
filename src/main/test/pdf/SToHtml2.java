@@ -189,7 +189,7 @@ public class SToHtml2 {
 
 
     public static void main(String[] args) throws IOException {
-        File file = new File("E:\\西安\\S文件\\S01_6931.pdf");
+        File file = new File("E:\\有问题\\S01_0001.pdf");
         StringBuffer stringBuffer = toHtmlString(file);
         String[] split = stringBuffer.toString().split("\n");
         for (String s : split) {
