@@ -1,8 +1,6 @@
 package classLoader;
 
-import com.sun.deploy.util.ReflectionUtil;
 import org.junit.Test;
-import sun.reflect.Reflection;
 
 import java.lang.reflect.Method;
 
