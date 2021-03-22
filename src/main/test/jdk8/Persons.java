@@ -1,9 +1,12 @@
 package jdk8;
 
+import java.util.Objects;
+
 public class Persons {
     private String name;
     private int age;
     private double salary;
+    private Status status;
 
     public Persons() {
     }
@@ -11,6 +14,7 @@ public class Persons {
     public Persons(int age) {
         this.age = age;
     }
+
 
     public String getName() {
         return name;
@@ -42,6 +46,21 @@ public class Persons {
         this.salary = salary;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Persons(String name, int age, double salary, Status status) {
+        this.name = name;
+        this.age = age;
+        this.salary = salary;
+        this.status = status;
+    }
+
     public Persons(String name, int age) {
         this.name = name;
         this.age = age;
@@ -53,6 +72,28 @@ public class Persons {
                 "name='" + name + '\'' +
                 ", age=" + age +
                 ", salary=" + salary +
+                ", status=" + status +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Persons persons = (Persons) o;
+        return age == persons.age &&
+                Double.compare(persons.salary, salary) == 0 &&
+                Objects.equals(name, persons.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age, salary);
+    }
+
+    public enum Status {
+        FREE,
+        BUSY,
+        VOCATION
     }
 }

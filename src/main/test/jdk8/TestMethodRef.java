@@ -1,5 +1,6 @@
 package jdk8;
 
+import org.junit.After;
 import org.junit.Test;
 
 import java.io.PrintStream;
@@ -25,9 +26,29 @@ import java.util.function.*;
  *  格式： ClassName::new
  *
  *  注意：需要调用的构造器参数列表与函数式接口中抽象方法的参数保持一致
+ *
+ *  三、数据引用
+ *  Type[]::new
  */
 public class TestMethodRef {
 
+    /**
+     * 数组引用
+     */
+    @Test
+    public void test06() {
+        Function<Integer, String[]> fun = (x) -> new String[x];
+        String[] apply = fun.apply(10);
+        System.out.println(apply.length);
+
+        Function<Integer, String[]> fun2 = String[]::new;
+        String[] apply1 = fun2.apply(20);
+        System.out.println(apply1.length);
+    }
+
+    /**
+     * 构造器引用
+     */
     @Test
     public void test05() {
         Supplier<Persons> su = Persons::new;
