@@ -2,3 +2,6 @@ target/
 .idea/
 demo.iml
 target/
+out/
+src/main/test/META-INF/MANIFEST.MF
+02.yaml

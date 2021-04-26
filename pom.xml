@@ -175,7 +175,16 @@
             <artifactId>jxls-poi</artifactId>
             <version>1.0.12</version>
         </dependency>
-
+        <dependency>
+            <groupId>io.airlift</groupId>
+            <artifactId>airline</artifactId>
+            <version>0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.27</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>demo</finalName>
