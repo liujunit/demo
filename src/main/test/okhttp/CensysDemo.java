@@ -17,10 +17,10 @@ public class CensysDemo {
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
                 .authenticator((route, response) -> {
                     //认证
-                    String credential = Credentials.basic("5e9db3ce-21ea-42db-a86b-6a71714f1b77", "xSwL7Wtnvmd6Z1NOplwpcLa5rghOKonI");
+                    String credential = Credentials.basic("0bd0e9d8-c8e7-4b32-a45a-333a0994a106", "fDZAO855zVuqP7qtjyuTOuF0dfQdbW6G");
                     return response.request().newBuilder().header("Authorization", credential).build();
                 })
-                .proxy(new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 1080)))
+//                .proxy(new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 1080)))
                 .build();
         final Request request = new Request.Builder()
                 .url(url1)

@@ -20,4 +20,12 @@ public class LambdaTest03 {
         return mf.format(a, df);
     }
 
+    @Test
+    public void test02() {
+        BigDecimal a = new BigDecimal(10);
+        BigDecimal b = new BigDecimal(4);
+        BigDecimal divide = a.divide(b, BigDecimal.ROUND_HALF_UP);
+        System.out.println(divide.toString());
+    }
+
 }

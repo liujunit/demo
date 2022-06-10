@@ -6,24 +6,22 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 
-public class VirustotalDemo {
+public class VirustotalHashDemo {
 
-    private static final String url1 = "https://www.virustotal.com/api/v3/domains/andisec.com";
+    private static final String url = "https://www.virustotal.com/api/v3/files/12b786e017bd0ff400e20327d582a03d2fbbae033b75d1c9747c524776d2bd53";
 
-    private static final String url2 = "https://www.virustotal.com/api/v3/ip_addresses/1.1.1.1";
+    private static final String url2 = "https://www.virustotal.com/api/v3/files/512301C535C88255C9A252FDF70B7A03";
 
-    public static void main(String[] args) {
-        OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-//                .proxy(new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 1080)))
-                .build();
+
+    public static void main(String[] args) throws IOException {
+        OkHttpClient client = new OkHttpClient();
         final Request request = new Request.Builder()
                 .header("x-apikey", "abde72805640e56a41201885adb537f666b107ce333539076e93e34cba74e8e8")
-                .url(url2)
+                .url(url)
                 .build();
-        final Call call = okHttpClient.newCall(request);
+
+        final Call call = client.newCall(request);
         new Thread(() -> {
             try {
                 Response response = call.execute();

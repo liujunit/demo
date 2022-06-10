@@ -17,9 +17,9 @@ public class WhoisDemo {
         whoisClient.setDefaultPort(43);
         whoisClient.setConnectTimeout(10000);
         whoisClient.setDefaultTimeout(10000);
-        whoisClient.connect("whois.afrinic.net");
+//        whoisClient.connect("whois.afrinic.net");
 //        whoisClient.connect("whois.apnic.net");
-//        whoisClient.connect("whois.arin.net"); //需要n+
+        whoisClient.connect("whois.arin.net"); //需要n+
 //        whoisClient.connect("whois.lacnic.net");
 //        whoisClient.connect("whois.ripe.net");
         List<String> list = IOUtils.readLines(whoisClient.getInputStream("182.61.200.7"), StandardCharsets.UTF_8);
